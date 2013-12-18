@@ -1,0 +1,1 @@
+Tired of using the ConfigurationManager?  So was I!  There's too much room for errors.  
