@@ -19,7 +19,13 @@ namespace SimpleSettings
 		/// <summary>
 		/// Initializes a new instance of the <see cref="BaseSettings"/> class.
 		/// </summary>
-		protected BaseSettings()
+		/// <param name="typeConverter">
+		/// The type Converter.
+		/// </param>
+		/// <param name="reader">
+		/// The reader.
+		/// </param>
+		protected BaseSettings(ITypeConverter typeConverter = null, IConfigurationReader reader = null) : base(typeConverter, reader)
 		{
 			this.LoadSettingsUsingReflection();
 		}
@@ -34,7 +40,7 @@ namespace SimpleSettings
 			{
 				try
 				{
-					var settingsValue = this.GetValue(property.Name);
+					var settingsValue = this.ConfigurationReader.GetValue(property.Name);
 					var propertyType = property.PropertyType;
 					var typedValue = this.TypeConverter.Convert(settingsValue, propertyType);
 					property.SetValue(this, typedValue);
@@ -42,7 +48,7 @@ namespace SimpleSettings
 				catch (Exception exception)
 				{
 					string message = string.Format("Error trying to set a value for {0} from application configuration.  See inner exception for more details.", property.Name);
-					throw new Exception(message, exception);
+					throw new SettingsException(message, exception);
 				}
 			}
 		}

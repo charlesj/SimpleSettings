@@ -37,7 +37,7 @@ namespace SimpleSettings.Tests
 		[Fact]
 		public void ThrowsOnInvalidConversion()
 		{
-			Assert.Throws<Exception>(() => this.typeConverter.Convert<int>("Hello"));
+			Assert.Throws<SettingsException>(() => this.typeConverter.Convert<int>("Hello"));
 		}
 	}
 }

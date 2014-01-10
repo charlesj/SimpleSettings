@@ -1,21 +1,20 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TypeConverter.cs" company="Josh Charles">
+// <copyright file="ITypeConverter.cs" company="Josh Charles">
 //   Copyright 2013 Josh Charles.  Released under the MIT License.
 // </copyright>
 // <summary>
-//   The type converter is used to genericly convert an object from one type to another.
+//   Defines the ITypeConverter type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace SimpleSettings
 {
 	using System;
-	using System.ComponentModel;
 
 	/// <summary>
-	/// The type converter is used to generically convert an object from one type to another.
+	/// The TypeConverter interface.
 	/// </summary>
-	public class TypeConverter : ITypeConverter
+	public interface ITypeConverter
 	{
 		/// <summary>
 		/// Converts an object to another type, with some error checking.
@@ -32,21 +31,7 @@ namespace SimpleSettings
 		/// <exception cref="Exception">
 		/// Throws an exception if the requested conversion is not valid.
 		/// </exception>
-		public object Convert(object value, Type targetType)
-		{
-			var converter = TypeDescriptor.GetConverter(targetType);
-			if (!converter.IsValid(value) || !converter.CanConvertFrom(value.GetType()))
-			{
-				throw new SettingsException("Attempted to convert to a type that was not valid.");
-			}
-
-			if (value is string)
-			{
-				return converter.ConvertFromString(value as string);
-			}
-
-			return converter.ConvertTo(value, targetType);
-		}
+		object Convert(object value, Type targetType);
 
 		/// <summary>
 		/// Converts an object to another type generically.
@@ -60,9 +45,6 @@ namespace SimpleSettings
 		/// <returns>
 		/// The <see cref="TTargetType"/>.
 		/// </returns>
-		public TTargetType Convert<TTargetType>(object value)
-		{
-			return (TTargetType)this.Convert(value, typeof(TTargetType));
-		}
+		TTargetType Convert<TTargetType>(object value);
 	}
 }

@@ -9,26 +9,46 @@
 
 namespace SimpleSettings
 {
-	using System;
-	using System.Configuration;
-
 	/// <summary>
 	/// The settings base creates a basis for using ApplicationSettings.
 	/// </summary>
-	public abstract class Settings 
+	public abstract class Settings
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Settings"/> class.
 		/// </summary>
-		protected Settings()
+		/// <param name="typeConverter">
+		/// The type Converter.
+		/// </param>
+		/// <param name="reader">
+		/// The reader.
+		/// </param>
+		protected Settings(ITypeConverter typeConverter = null, IConfigurationReader reader = null)
 		{
-			this.TypeConverter = new TypeConverter();
+			if (typeConverter == null)
+			{
+				typeConverter = new TypeConverter();
+			}
+
+			this.TypeConverter = typeConverter;
+
+			if (reader == null)
+			{
+				reader = new ConfigurationReader();
+			}
+
+			this.ConfigurationReader = reader;
 		}
 
 		/// <summary>
-		/// Gets the type converter.
+		/// Gets or sets the type converter.
 		/// </summary>
-		protected TypeConverter TypeConverter { get; private set; }
+		protected ITypeConverter TypeConverter { get; set; }
+
+		/// <summary>
+		/// Gets or sets the configuration reader.
+		/// </summary>
+		protected IConfigurationReader ConfigurationReader { get; set; }
 
 		/// <summary>
 		/// The check all setting for values.
@@ -42,47 +62,9 @@ namespace SimpleSettings
 				if (value == null)
 				{
 					var message = string.Format("Settings property is missing value: {0}", property.Name);
-					throw new Exception(message);
+					throw new SettingsException(message);
 				}
 			}
-		}
-
-		/// <summary>
-		/// Gets a value from the configuration manager.
-		/// </summary>
-		/// <param name="key">
-		/// The key in the configuration file.
-		/// </param>
-		/// <returns>
-		/// The <see cref="string"/>.
-		/// </returns>
-		protected string GetValue(string key)
-		{
-			var value = ConfigurationManager.AppSettings[key];
-			if (string.IsNullOrEmpty(value))
-			{
-				string message = string.Format("Missing Settings Value: {0}", key);
-				throw new Exception(message);
-			}
-
-			return value;
-		}
-
-		/// <summary>
-		/// Gets the value generically.
-		/// </summary>
-		/// <param name="key">
-		/// The key.
-		/// </param>
-		/// <typeparam name="TSettingsType">
-		/// The type of the settings value.
-		/// </typeparam>
-		/// <returns>
-		/// The <see cref="TSettingsType"/>.
-		/// </returns>
-		protected TSettingsType GetValue<TSettingsType>(string key)
-		{
-			return this.TypeConverter.Convert<TSettingsType>(this.GetValue(key));
 		}
 	}
 }

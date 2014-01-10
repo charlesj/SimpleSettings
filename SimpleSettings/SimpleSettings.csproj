@@ -41,8 +41,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseSettings.cs" />
+    <Compile Include="ConfigurationReader.cs" />
+    <Compile Include="IConfigurationReader.cs" />
+    <Compile Include="ITypeConverter.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ObjectExtensions.cs" />
+    <Compile Include="SettingsException.cs" />
     <Compile Include="TypeConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
